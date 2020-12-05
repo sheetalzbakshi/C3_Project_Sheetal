@@ -1,6 +1,7 @@
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RestaurantService {
     private static List<Restaurant> restaurants = new ArrayList<>();
@@ -32,5 +33,22 @@ public class RestaurantService {
 
     public List<Restaurant> getRestaurants() {
         return restaurants;
+    }
+
+    public int GetOrderPrice(String restaurantName, List<String> items) throws restaurantNotFoundException, IllegalArgumentException {
+
+        Restaurant restaurant = findRestaurantByName(restaurantName);
+
+        if (items == null)
+            throw new IllegalArgumentException();
+        int total = 0;
+
+        List<Item> desiredItems = restaurant.getMenu().stream().filter(item -> items.stream().anyMatch(k -> k == item.getName())).collect(Collectors.toList());
+
+        if (desiredItems != null) {
+            for (Item item : desiredItems)
+                total += item.getPrice();
+        }
+        return total;
     }
 }
