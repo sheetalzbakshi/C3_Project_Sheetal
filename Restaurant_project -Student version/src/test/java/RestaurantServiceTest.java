@@ -92,4 +92,34 @@ class RestaurantServiceTest {
     }
     //<<<<<<<<<<<<<<<<<<<<ADMIN: ADDING & REMOVING RESTAURANTS>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+
+    //<<<<<<<<<<<<<<<<<<<Calculate Order >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    @Test
+    public void selecting_a_restaurant_which_does_not_exist_when_asking_for_total_price_throws_Exception () throws restaurantNotFoundException
+    {
+        assertThrows(restaurantNotFoundException.class, ()->service.GetOrderPrice("non exiting name", new ArrayList<String>() ));
+    }
+
+    @Test
+    public void asking_for_null_item_list_when_asking_for_total_price_throws_Exception () throws IllegalArgumentException
+    {
+        assertThrows(IllegalArgumentException.class, ()->service.GetOrderPrice(restaurant.getName(), null ));
+    }
+
+    @Test
+    public void selecting_no_menu_item_of_a_restaurant_menu_should_give_zero_price() throws restaurantNotFoundException, IllegalArgumentException
+    {
+        int selectedprice = service.GetOrderPrice(restaurant.getName(), new ArrayList<String>() );
+        assertEquals(0, selectedprice);
+    }
+
+    @Test
+    public void selecting_the_menu_items_of_a_restaurant_menu_should_give_correct_price() throws restaurantNotFoundException, IllegalArgumentException
+    {
+        int selectedprice = service.GetOrderPrice(restaurant.getName(), restaurant.getMenu().stream().map(x -> x.getName()).collect(Collectors.toList()) );
+        assertEquals(119+269, selectedprice);
+    }
+
+    //<<<<<<<<<<<<<<<<<<<Calculate Order >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 }
